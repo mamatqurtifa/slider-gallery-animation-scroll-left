@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider Gallery Animation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+        <img src="https://images.unsplash.com/photo-1554072675-66db59dba46f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGdlcm1hbnl8ZW58MHx8MHx8fDA%3D"
+            alt="" class="image">
+        <img src="https://images.unsplash.com/photo-1528728329032-2972f65dfb3f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGdlcm1hbnl8ZW58MHx8MHx8fDA%3D"
+            alt="" class="image">
+        <img src="https://images.unsplash.com/photo-1617394557915-fdf2a65fcfec?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGdlcm1hbnl8ZW58MHx8MHx8fDA%3D"
+            alt="" class="image">
+        <img src="https://images.unsplash.com/photo-1468914793027-6ecfb73cb1ed?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGdlcm1hbnl8ZW58MHx8MHx8fDA%3D"
+            alt="" class="image">
+        <img src="https://images.unsplash.com/photo-1611426998527-37fcb2dab39f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGdlcm1hbnl8ZW58MHx8MHx8fDA%3D"
+            alt="" class="image">
+        <img src="https://plus.unsplash.com/premium_photo-1688147583826-1c169e82c57f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Z2VybWFueXxlbnwwfHwwfHx8MA%3D%3D"
+            alt="" class="image">
+        <img src="https://images.unsplash.com/photo-1458107768117-48f4877a125a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Z2VybWFueXxlbnwwfHwwfHx8MA%3D%3D"
+            alt="" class="image">
+        <img src="https://images.unsplash.com/photo-1501952476817-d7ae22e8ee4e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Z2VybWFueXxlbnwwfHwwfHx8MA%3D%3D"
+            alt="" class="image">
+        <img src="https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2VybWFueXxlbnwwfHwwfHx8MA%3D%3D"
+            alt="" class="image">
+        <img src="https://plus.unsplash.com/premium_photo-1661962435210-e6cdbb2cbeb4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Z2VybWFueXxlbnwwfHwwfHx8MA%3D%3D"
+            alt="" class="image">
+    </div>
+    <script>
+        const track = document.getElementById("image-track");
+
+        const handleOnDown = e => track.dataset.mouseDownAt = e.clientX;
+
+        const handleOnUp = () => {
+            track.dataset.mouseDownAt = "0";
+            track.dataset.prevPercentage = track.dataset.percentage;
+        }
+
+        window.onmousedown = e => handleOnDown(e);
+
+        window.ontouchstart = e => handleOnDown(e.touches[0]);
+
+        window.onmouseup = e => handleOnUp(e);
+
+        window.ontouchend = e => handleOnUp(e.touches[0]);
+
+        window.onmousemove = e => handleOnMove(e);
+
+        window.ontouchmove = e => handleOnMove(e.touches[0]);
+
+
+        // Scale
+        function scaleImagesOnCenter() {
+            const centerX = window.innerWidth / 2; // Posisi tengah layar
+
+            for (const image of track.getElementsByClassName("image")) {
+                // Dapatkan posisi tengah dari setiap gambar
+                const imageRect = image.getBoundingClientRect();
+                const imageCenterX = imageRect.left + imageRect.width / 2;
+
+                // Hitung jarak gambar dari posisi tengah layar
+                const distanceFromCenter = Math.abs(centerX - imageCenterX);
+
+                // Tentukan skala berdasarkan jarak
+                const maxScale = 1.5;
+                const scale = Math.max(1, maxScale - (distanceFromCenter / centerX) * 0.5);
+
+                // Terapkan skala ke gambar
+                image.style.transform = `scale(${scale})`;
+            }
+        }
+
+        // Tambahkan panggilan fungsi ini di akhir handleOnMove untuk menjalankannya setiap kali posisi gambar berubah
+        const handleOnMove = (e) => {
+            if (track.dataset.mouseDownAt === "0") return;
+
+            const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX,
+                maxDelta = window.innerWidth / 2;
+
+            const percentage = (mouseDelta / maxDelta) * -100,
+                nextPercentageUnconstrained = parseFloat(track.dataset.prevPercentage) + percentage,
+                nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -100);
+
+            track.dataset.percentage = nextPercentage;
+
+            track.animate({
+                transform: `translate(${nextPercentage}%, -50%)`
+            }, { duration: 1200, fill: "forwards" });
+
+            for (const image of track.getElementsByClassName("image")) {
+                image.animate({
+                    objectPosition: `${100 + nextPercentage}% center`
+                }, { duration: 1200, fill: "forwards" });
+            }
+
+            // Panggil fungsi pembesaran gambar
+            scaleImagesOnCenter();
+        };
+
+    </script>
+</body>
+
+</html>
